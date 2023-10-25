@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import tkinter.messagebox as mb
 
-class TelaNaturezaJuridica:
+class TelaChamado:
     def __init__(self, janela, dao):
         self.dao = dao
 

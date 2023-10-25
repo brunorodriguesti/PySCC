@@ -1,6 +1,7 @@
 import sqlite3
 
-class NaturezaJuridicaDAO:
+class ChamadoDAO:
+
     def abrirConexao(self):
         try:
             self.conexao = sqlite3.connect("trabalho.db")
