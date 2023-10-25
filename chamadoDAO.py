@@ -34,7 +34,7 @@ class ChamadoDAO:
     def buscar(self):
         if self.abrirConexao():
             self.cursor.execute(
-                "select codigo, descricao, QTD_ABERT, status from tb_chamado"
+                "select codigo, descricao, julianday(date()) - julianday(DATA_ABERTURA) AS qtdDias, status from tb_chamado where status = 'ABERTO'"
             )
             resultado = self.cursor.fetchall()
             self.fecharConexao()

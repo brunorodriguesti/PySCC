@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import tkinter.messagebox as mb
 from tkcalendar import Calendar, DateEntry
+from datetime import date
 
 
 class TelaChamado:
@@ -28,7 +29,7 @@ class TelaChamado:
 
         self.lblDataAbertura = tk.Label(self.quadro, text="Data da Abertura: ")
         self.lblDataAbertura.grid(row=3, column=0)
-        self.etyDataAbertura = DateEntry(self.quadro)
+        self.etyDataAbertura = DateEntry(self.quadro, date_pattern="y-mm-dd")
         self.etyDataAbertura.grid(row=3, column=1)
 
         self.lblDataFechamento = tk.Label(self.quadro, text="Data Fechamento: ")
