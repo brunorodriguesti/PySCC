@@ -1,7 +1,7 @@
 import sqlite3
 
-class ChamadoDAO:
 
+class ChamadoDAO:
     def __init__(self):
         self.conexao = sqlite3.connect("SCC.db")
         cursor = self.conexao.cursor()
@@ -16,7 +16,6 @@ class ChamadoDAO:
                 cursor.close()
                 self.conexao.close()
 
-
     def abrirConexao(self):
         try:
             self.conexao = sqlite3.connect("SCC.db")
@@ -26,45 +25,51 @@ class ChamadoDAO:
         except sqlite3.DatabaseError as error:
             print("Erro na conexao:", error)
             return False
-        
+
     def fecharConexao(self):
-        if(self.conexao):
+        if self.conexao:
             self.cursor.close()
             self.conexao.close()
 
     def buscar(self):
-        if(self.abrirConexao()):
-            self.cursor.execute("select * from tb_chamado")
+        if self.abrirConexao():
+            self.cursor.execute(
+                "select codigo, descricao, QTD_ABERT, status from tb_chamado"
+            )
             resultado = self.cursor.fetchall()
-            self.fecharConexao() 
+            self.fecharConexao()
             return resultado
         else:
             return None
-        
+
     def buscarPorCodigo(self, codigo):
-        if(self.abrirConexao()):
-            self.cursor.execute("select * from tb_chamado where codigo = ?",(codigo,))
+        if self.abrirConexao():
+            self.cursor.execute("select * from tb_chamado where codigo = ?", (codigo,))
             resultado = self.cursor.fetchone()
-            self.fecharConexao() 
+            self.fecharConexao()
             return resultado
         else:
             return None
-        
-    def inserir(self, codigo, descricao):
-         if(self.abrirConexao()):
+
+    def inserir(self, codigo, descricao, pessoa, dataAbertura):
+        if self.abrirConexao():
             try:
-                self.cursor.execute("insert into tb_chamado (codigo, descricao) values (?,?)",(codigo,descricao))            
+                self.cursor.execute(
+                    "insert into tb_chamado (codigo, descricao, aberto_por, data_abertura, status) values (?,?,?,?,?)",
+                    (codigo, descricao, pessoa, dataAbertura, "ABERTO"),
+                )
                 self.conexao.commit()
                 self.fecharConexao()
             except sqlite3.DatabaseError as erro:
-                print(erro) 
-        
+                print(erro)
+
     def excluir(self, codigo):
-         if(self.abrirConexao()):
+        if self.abrirConexao():
             try:
-                self.cursor.execute("delete from tb_chamado where codigo = ?",(codigo,))            
+                self.cursor.execute(
+                    "delete from tb_chamado where codigo = ?", (codigo,)
+                )
                 self.conexao.commit()
                 self.fecharConexao()
             except sqlite3.DatabaseError as erro:
-                print(erro) 
-        
+                print(erro)
