@@ -34,7 +34,51 @@ class ChamadoDAO:
     def buscar(self):
         if self.abrirConexao():
             self.cursor.execute(
-                "select codigo, descricao, julianday(date()) - julianday(DATA_ABERTURA) AS qtdDias, status from tb_chamado where status = 'ABERTO'"
+                "select codigo, descricao, julianday(date()) - julianday(DATA_ABERTURA) AS qtdDias, status, DATA_ABERTURA, aberto_por from tb_chamado"
+            )
+            resultado = self.cursor.fetchall()
+            self.fecharConexao()
+            return resultado
+        else:
+            return None
+
+    def buscarPorFechados(self):
+        if self.abrirConexao():
+            self.cursor.execute(
+                "select codigo, descricao, julianday(date()) - julianday(DATA_ABERTURA) AS qtdDias, status, DATA_ABERTURA, aberto_por, data_fechamento from tb_chamado where status = 'FECHADO'"
+            )
+            resultado = self.cursor.fetchall()
+            self.fecharConexao()
+            return resultado
+        else:
+            return None
+
+    def buscarFechados(self):
+        if self.abrirConexao():
+            self.cursor.execute(
+                "select codigo, descricao, julianday(date()) - julianday(DATA_ABERTURA) AS qtdDias, status, DATA_ABERTURA, aberto_por from tb_chamado where status = 'FECHADO'"
+            )
+            resultado = self.cursor.fetchall()
+            self.fecharConexao()
+            return resultado
+        else:
+            return None
+
+    def buscarPorAbertos(self):
+        if self.abrirConexao():
+            self.cursor.execute(
+                "select codigo, descricao, julianday(date()) - julianday(DATA_ABERTURA) AS qtdDias, status, DATA_ABERTURA, aberto_por from tb_chamado where status = 'ABERTO'"
+            )
+            resultado = self.cursor.fetchall()
+            self.fecharConexao()
+            return resultado
+        else:
+            return None
+
+    def buscarAbertos(self):
+        if self.abrirConexao():
+            self.cursor.execute(
+                "select codigo, descricao, julianday(date()) - julianday(DATA_ABERTURA) AS qtdDias, status, DATA_ABERTURA, aberto_por from tb_chamado where status = 'ABERTO'"
             )
             resultado = self.cursor.fetchall()
             self.fecharConexao()
@@ -68,6 +112,21 @@ class ChamadoDAO:
             try:
                 self.cursor.execute(
                     "delete from tb_chamado where codigo = ?", (codigo,)
+                )
+                self.conexao.commit()
+                self.fecharConexao()
+            except sqlite3.DatabaseError as erro:
+                print(erro)
+
+    def fechar(self, codigo, dataFechamento):
+        if self.abrirConexao():
+            try:
+                self.cursor.execute(
+                    "update tb_chamado set status = 'FECHADO', DATA_FECHAMENTO = ? where codigo = ?",
+                    (
+                        dataFechamento,
+                        codigo,
+                    ),
                 )
                 self.conexao.commit()
                 self.fecharConexao()

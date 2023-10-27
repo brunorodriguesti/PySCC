@@ -34,11 +34,9 @@ class TelaChamado:
 
         self.lblDataFechamento = tk.Label(self.quadro, text="Data Fechamento: ")
         self.lblDataFechamento.grid(row=4, column=0)
-        self.etyDataFechamento = tk.Entry(self.quadro)
-        self.etyDataFechamento.grid(row=4, column=1)
 
-        self.btnInserir = tk.Button(self.quadro, text="Inserir")
-        self.btnInserir.grid(row=5, column=0)
+        self.btnInserir = tk.Button(self.quadro, text="Cadastrar")
+        self.btnInserir.grid(row=5, column=0, padx=10)
         self.btnInserir.bind("<Button-1>", self.inserirChamado)
 
         self.btnExcluir = tk.Button(self.quadro, text="Excluir")
@@ -46,8 +44,20 @@ class TelaChamado:
         self.btnExcluir.bind("<Button-1>", self.excluirChamado)
 
         self.btnBuscar = tk.Button(self.quadro, text="Buscar")
-        self.btnBuscar.grid(row=5, column=2)
+        self.btnBuscar.grid(row=5, column=2, padx=10)
         self.btnBuscar.bind("<Button-1>", self.buscarChamado)
+
+        self.btnBuscar = tk.Button(self.quadro, text="Fechar Chamado")
+        self.btnBuscar.grid(row=5, column=7, padx=10)
+        self.btnBuscar.bind("<Button-1>", self.fecharChamado)
+
+        self.btnBuscar = tk.Button(self.quadro, text="Listar Fechados")
+        self.btnBuscar.grid(row=5, column=10, padx=10)
+        self.btnBuscar.bind("<Button-1>", self.listarFechados)
+
+        self.btnBuscar = tk.Button(self.quadro, text="Listar Abertos")
+        self.btnBuscar.grid(row=5, column=14, padx=10)
+        self.btnBuscar.bind("<Button-1>", self.listarAbertos)
 
         columns = ("codigo", "descricao", "diasAbertos", "status")
         self.tree = ttk.Treeview(janela, columns=columns, show="headings")
@@ -89,6 +99,16 @@ class TelaChamado:
         self.etyDescricao.delete(0, tk.END)
         self.etyDescricao.insert(0, item["values"][1])
 
+        self.etyDataAbertura.delete(0, tk.END)
+        data_abertura = item["values"][4]
+        self.etyDataAbertura.set_date(data_abertura)
+
+        self.etyDataFechamento = DateEntry(self.quadro, date_pattern="y-mm-dd")
+        self.etyDataFechamento.grid(row=4, column=1)
+
+        self.etyPessoa.delete(0, tk.END)
+        self.etyPessoa.insert(0, item["values"][5])
+
         print("you clicked on", item["values"])
 
     def inserirChamado(self, event):
@@ -116,3 +136,19 @@ class TelaChamado:
             self.atualizarTabela(self.dao.buscar())
         else:
             mb.showinfo("Informação", "É necessário informar código para buscar")
+
+    def fecharChamado(self, event):
+        if self.etyCodigo.get() != "":
+            self.dao.fechar(self.etyCodigo.get(), self.etyDataFechamento.get())
+            self.atualizarTabela(self.dao.buscar())
+        else:
+            mb.showinfo("Informação", "É necessário informar código para fechar")
+            return False
+
+    def listarFechados(self, event):
+        self.dao.buscarPorFechados()
+        self.atualizarTabela(self.dao.buscarFechados())
+
+    def listarAbertos(self, event):
+        self.dao.buscarPorAbertos()
+        self.atualizarTabela(self.dao.buscarAbertos())
